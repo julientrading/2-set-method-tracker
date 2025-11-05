@@ -29,7 +29,8 @@ export function createRouteClient() {
  * WARNING: Only use server-side, never expose to client
  */
 export function createServiceClient() {
-  const { createClient } = require('@supabase/supabase-js')
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { createClient } = require('@supabase/supabase-js') as typeof import('@supabase/supabase-js')
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!

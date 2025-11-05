@@ -104,7 +104,7 @@ export default function LandingPage() {
             </div>
             <div className="rounded-lg bg-white/10 p-4 backdrop-blur">
               <div className="text-3xl font-bold text-orange-400">Streak Tracking</div>
-              <div className="text-sm text-gray-400">Don't break the chain</div>
+              <div className="text-sm text-gray-400">Don&apos;t break the chain</div>
             </div>
             <div className="rounded-lg bg-white/10 p-4 backdrop-blur">
               <div className="text-3xl font-bold text-purple-400">Achievements</div>

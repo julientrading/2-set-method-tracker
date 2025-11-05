@@ -267,10 +267,12 @@ export interface Database {
           badge_icon_url: string | null
           category: string
           requirement_type: string
-          requirement_value: number
+          requirement_value: number | null
+          exercise_specific: string | null
           xp_reward: number
           rarity: string
           is_secret: boolean
+          sort_order: number
           created_at: string
         }
         Insert: {
@@ -280,10 +282,12 @@ export interface Database {
           badge_icon_url?: string | null
           category: string
           requirement_type: string
-          requirement_value: number
+          requirement_value?: number | null
+          exercise_specific?: string | null
           xp_reward?: number
           rarity?: string
           is_secret?: boolean
+          sort_order?: number
           created_at?: string
         }
         Update: {
@@ -293,10 +297,12 @@ export interface Database {
           badge_icon_url?: string | null
           category?: string
           requirement_type?: string
-          requirement_value?: number
+          requirement_value?: number | null
+          exercise_specific?: string | null
           xp_reward?: number
           rarity?: string
           is_secret?: boolean
+          sort_order?: number
           created_at?: string
         }
       }

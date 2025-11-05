@@ -3,6 +3,11 @@
  * Re-exports from xp-calculator and adds UI helpers
  */
 
+import {
+  calculateLevelFromXP,
+  getLevelProgress,
+} from './xp-calculator'
+
 export {
   calculateLevelFromXP,
   getXPForNextLevel,
@@ -70,8 +75,6 @@ export function didLevelUp(oldXP: number, newXP: number): {
   newLevel: number
   levelsGained: number
 } {
-  const { calculateLevelFromXP } = require('./xp-calculator')
-
   const oldLevel = calculateLevelFromXP(oldXP)
   const newLevel = calculateLevelFromXP(newXP)
   const leveledUp = newLevel > oldLevel
@@ -118,8 +121,6 @@ export function getEstimatedTimeToNextLevel(
   days: number
   message: string
 } {
-  const { getXPForNextLevel, getLevelProgress } = require('./xp-calculator')
-
   const { xpInCurrentLevel, xpNeededForNextLevel } = getLevelProgress(currentXP)
   const xpRemaining = xpNeededForNextLevel - xpInCurrentLevel
 
