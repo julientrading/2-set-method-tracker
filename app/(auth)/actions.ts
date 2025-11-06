@@ -32,6 +32,7 @@ export async function signup(formData: FormData) {
       data: {
         full_name: formData.get('full_name') as string,
       },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://2-set-method-tracker.vercel.app'}/login`,
     },
   }
 
@@ -54,8 +55,7 @@ export async function signup(formData: FormData) {
     }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/onboarding')
+  return { success: true }
 }
 
 export async function signOut() {
@@ -96,4 +96,24 @@ export async function updatePassword(formData: FormData) {
 
   revalidatePath('/', 'layout')
   redirect('/dashboard')
+}
+
+export async function resendConfirmationEmail(formData: FormData) {
+  const supabase = createRouteClient()
+
+  const email = formData.get('email') as string
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://2-set-method-tracker.vercel.app'}/auth/confirm`,
+    },
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: true }
 }
