@@ -16,11 +16,20 @@ export default async function DashboardPage() {
   }
 
   // Fetch user profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('*')
     .eq('id', user.id)
     .single()
+
+  // If no profile exists, create one (for users who signed up before profile creation was implemented)
+  if (!profile && profileError?.code === 'PGRST116') {
+    await supabase.from('users').insert({
+      id: user.id,
+      email: user.email!,
+      full_name: user.user_metadata?.full_name || null,
+    })
+  }
 
   // Fetch gamification stats
   const { data: gamificationStats } = await supabase
@@ -31,7 +40,8 @@ export default async function DashboardPage() {
 
   // Check if this is the user's first time (no workouts completed yet)
   const isFirstTime = (gamificationStats?.total_workouts_completed || 0) === 0
-  const firstName = profile?.full_name?.split(' ')[0] || 'Athlete'
+  // Use profile full_name, fallback to user metadata, then to 'Athlete'
+  const firstName = profile?.full_name?.split(' ')[0] || user.user_metadata?.full_name?.split(' ')[0] || 'Athlete'
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
