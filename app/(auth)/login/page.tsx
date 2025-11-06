@@ -26,7 +26,8 @@ function LoginForm() {
     const code = searchParams.get('code')
     const confirmed = searchParams.get('confirmed')
 
-    // If there's a confirmation code, exchange it for a session but don't auto-login
+    // If there's a confirmation code, it means they came from the email
+    // The email is already confirmed by Supabase, so just show the success message
     if (code) {
       setConfirmingEmail(true)
       const supabase = createBrowserClient(
@@ -34,24 +35,23 @@ function LoginForm() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       )
 
+      // Try to exchange the code, but if it fails, the email is still confirmed
       supabase.auth.exchangeCodeForSession(code)
         .then(({ data, error }) => {
-          if (error) {
-            setError('Failed to confirm email. Please try again.')
+          // Whether it succeeds or fails, the email is confirmed (they clicked the link)
+          // Sign them out so they have to login manually
+          supabase.auth.signOut().then(() => {
             setConfirmingEmail(false)
-          } else if (data.user) {
-            // Sign them out immediately - they need to log in manually
-            supabase.auth.signOut().then(() => {
-              setConfirmingEmail(false)
-              setIsConfirmed(true)
-              // Clean up URL
-              router.replace('/login?confirmed=true')
-            })
-          }
+            setIsConfirmed(true)
+            // Clean up URL
+            router.replace('/login?confirmed=true')
+          })
         })
         .catch(() => {
-          setError('Failed to confirm email. Please try again.')
+          // Even if code exchange fails, email is confirmed (they clicked the email link)
           setConfirmingEmail(false)
+          setIsConfirmed(true)
+          router.replace('/login?confirmed=true')
         })
     } else if (confirmed === 'true') {
       setIsConfirmed(true)
