@@ -1,13 +1,15 @@
 /**
  * Next.js Middleware
- * Runs on every request to handle auth and route protection
+ *
+ * Note: Supabase auth middleware has been removed due to Vercel Edge Runtime compatibility issues.
+ * Auth protection is now handled at the page level in Server Components.
  */
 
-import { type NextRequest } from 'next/server'
-import { updateSession } from '@/lib/supabase/middleware'
+import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  // Simply pass through - auth is handled in Server Components
+  return NextResponse.next()
 }
 
 export const config = {
