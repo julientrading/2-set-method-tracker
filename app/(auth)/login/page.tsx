@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { login } from '../actions'
+import { login, resendConfirmationEmail } from '../actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,10 +11,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [resendSuccess, setResendSuccess] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
     setError(null)
+    setEmail(formData.get('email') as string)
 
     const result = await login(formData)
 
@@ -23,6 +26,28 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+
+  async function handleResendConfirmation() {
+    if (!email) return
+
+    setLoading(true)
+    const formData = new FormData()
+    formData.append('email', email)
+
+    const result = await resendConfirmationEmail(formData)
+
+    if (result?.error) {
+      setError(result.error)
+    } else {
+      setResendSuccess(true)
+      setError(null)
+    }
+
+    setLoading(false)
+  }
+
+  const isEmailNotConfirmed = error?.toLowerCase().includes('email not confirmed') ||
+    error?.toLowerCase().includes('confirm your email')
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
@@ -65,7 +90,23 @@ export default function LoginPage() {
 
             {error && (
               <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
+                <p>{error}</p>
+                {isEmailNotConfirmed && (
+                  <button
+                    type="button"
+                    onClick={handleResendConfirmation}
+                    className="mt-2 text-sm text-primary hover:underline"
+                    disabled={loading}
+                  >
+                    Resend confirmation email
+                  </button>
+                )}
+              </div>
+            )}
+
+            {resendSuccess && (
+              <div className="rounded-md bg-green-500/10 p-3 text-sm text-green-600">
+                Confirmation email sent! Check your inbox.
               </div>
             )}
 
