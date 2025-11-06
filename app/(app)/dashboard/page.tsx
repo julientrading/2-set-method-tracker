@@ -132,9 +132,11 @@ export default async function DashboardPage() {
             <CardTitle className="text-white">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-4">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Start Workout
-            </Button>
+            <Link href="/workout/start">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Start Workout
+              </Button>
+            </Link>
             <Link href="/history">
               <Button variant="outline" size="lg">
                 View History
