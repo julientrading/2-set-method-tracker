@@ -13,24 +13,24 @@ const WORKOUTS = {
     name: 'PULL DAY',
     emoji: '💪',
     exercises: [
-      { id: 1, name: 'Ring Pull-ups', unit: 'reps' },
-      { id: 2, name: 'Ring Rows', unit: 'reps' },
+      { name: 'Ring Pull-ups', unit: 'reps' },
+      { name: 'Ring Rows', unit: 'reps' },
     ],
   },
   push: {
     name: 'PUSH DAY',
     emoji: '🔥',
     exercises: [
-      { id: 3, name: 'Ring Dips', unit: 'reps' },
-      { id: 4, name: 'Ring Pseudo Planche Push-ups', unit: 'reps' },
+      { name: 'Ring Dips', unit: 'reps' },
+      { name: 'Ring Pseudo Planche Push-ups', unit: 'reps' },
     ],
   },
   legs: {
     name: 'LEGS DAY',
     emoji: '🦵',
     exercises: [
-      { id: 5, name: 'Pistol Squats', unit: 'reps' },
-      { id: 6, name: 'Nordic Curls', unit: 'reps' },
+      { name: 'Pistol Squats', unit: 'reps' },
+      { name: 'Nordic Curls', unit: 'reps' },
     ],
   },
 }
@@ -123,25 +123,25 @@ export default function ActiveWorkoutPage() {
     // Prepare workout data
     const setsData = [
       {
-        exercise_id: workout.exercises[0].id,
+        exercise_name: workout.exercises[0].name,
         set_number: 1,
         reps: sets['ex1-set1'].reps || 0,
         weight: sets['ex1-set1'].weight,
       },
       {
-        exercise_id: workout.exercises[0].id,
+        exercise_name: workout.exercises[0].name,
         set_number: 2,
         reps: sets['ex1-set2'].reps || 0,
         weight: sets['ex1-set2'].weight,
       },
       {
-        exercise_id: workout.exercises[1].id,
+        exercise_name: workout.exercises[1].name,
         set_number: 1,
         reps: sets['ex2-set1'].reps || 0,
         weight: sets['ex2-set1'].weight,
       },
       {
-        exercise_id: workout.exercises[1].id,
+        exercise_name: workout.exercises[1].name,
         set_number: 2,
         reps: sets['ex2-set2'].reps || 0,
         weight: sets['ex2-set2'].weight,
