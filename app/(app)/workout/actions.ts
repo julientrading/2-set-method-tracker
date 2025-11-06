@@ -4,7 +4,7 @@ import { createRouteClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 type WorkoutSetData = {
-  exercise_id: number
+  exercise_name: string
   set_number: number
   reps: number
   weight?: number | null
@@ -43,14 +43,29 @@ export async function saveWorkout(formData: {
       return { error: 'Failed to create workout' }
     }
 
-    // 2. Save workout sets
+    // 2. Fetch exercise UUIDs from database
+    const exerciseNames = [...new Set(formData.sets.map((set) => set.exercise_name))]
+    const { data: exercises, error: exercisesError } = await supabase
+      .from('exercises')
+      .select('id, name')
+      .in('name', exerciseNames)
+
+    if (exercisesError || !exercises || exercises.length === 0) {
+      console.error('Exercise fetch error:', exercisesError)
+      return { error: 'Failed to fetch exercises' }
+    }
+
+    // Create a map of exercise names to UUIDs
+    const exerciseMap = new Map(exercises.map((ex) => [ex.name, ex.id]))
+
+    // 3. Save workout sets with correct column names
     const setsToInsert = formData.sets.map((set) => ({
       workout_id: workout.id,
-      exercise_id: set.exercise_id,
+      exercise_id: exerciseMap.get(set.exercise_name),
       set_number: set.set_number,
-      reps_completed: set.reps,
-      weight_used: set.weight || null,
-      completed: true,
+      set_type: 'working',
+      reps: set.reps,
+      weight_kg: set.weight || null,
     }))
 
     const { error: setsError } = await supabase
