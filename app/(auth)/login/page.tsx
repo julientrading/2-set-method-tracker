@@ -15,15 +15,18 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [resendSuccess, setResendSuccess] = useState(false)
-  const [emailConfirmed, setEmailConfirmed] = useState(false)
   const [confirmingEmail, setConfirmingEmail] = useState(false)
 
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  const [isConfirmed, setIsConfirmed] = useState(false)
+
   useEffect(() => {
     const code = searchParams.get('code')
+    const confirmed = searchParams.get('confirmed')
 
+    // If there's a confirmation code, exchange it for a session but don't auto-login
     if (code) {
       setConfirmingEmail(true)
       const supabase = createBrowserClient(
@@ -37,18 +40,21 @@ function LoginForm() {
             setError('Failed to confirm email. Please try again.')
             setConfirmingEmail(false)
           } else if (data.user) {
-            setEmailConfirmed(true)
-            setConfirmingEmail(false)
-            // Redirect to dashboard after 2 seconds
-            setTimeout(() => {
-              router.push('/dashboard')
-            }, 2000)
+            // Sign them out immediately - they need to log in manually
+            supabase.auth.signOut().then(() => {
+              setConfirmingEmail(false)
+              setIsConfirmed(true)
+              // Clean up URL
+              router.replace('/login?confirmed=true')
+            })
           }
         })
         .catch(() => {
           setError('Failed to confirm email. Please try again.')
           setConfirmingEmail(false)
         })
+    } else if (confirmed === 'true') {
+      setIsConfirmed(true)
     }
   }, [searchParams, router])
 
@@ -100,32 +106,6 @@ function LoginForm() {
     )
   }
 
-  if (emailConfirmed) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mb-4 text-6xl">✅</div>
-            <CardTitle className="text-2xl font-bold text-green-600">
-              Email Confirmed!
-            </CardTitle>
-            <CardDescription>
-              Your email has been successfully verified.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Redirecting to your dashboard...
-            </p>
-            <Link href="/dashboard">
-              <Button className="w-full">Go to Dashboard</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
       <Card className="w-full max-w-md">
@@ -134,6 +114,15 @@ function LoginForm() {
           <CardDescription>Sign in to your 2 Set Method account</CardDescription>
         </CardHeader>
         <CardContent>
+          {isConfirmed && (
+            <div className="mb-4 rounded-md bg-green-500/10 p-4 text-center border border-green-500/20">
+              <div className="mb-2 text-3xl">✅</div>
+              <h3 className="font-semibold text-green-600 mb-1">Email Confirmed!</h3>
+              <p className="text-sm text-muted-foreground">
+                Thank you for confirming your email. Please log in to your new account.
+              </p>
+            </div>
+          )}
           <form action={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

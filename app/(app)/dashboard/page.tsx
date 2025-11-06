@@ -29,6 +29,10 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .single()
 
+  // Check if this is the user's first time (no workouts completed yet)
+  const isFirstTime = (gamificationStats?.total_workouts_completed || 0) === 0
+  const firstName = profile?.full_name?.split(' ')[0] || 'Athlete'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
       <div className="container mx-auto max-w-6xl space-y-8 py-8">
@@ -36,9 +40,13 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-white">
-              Welcome back, {profile?.full_name || 'Athlete'}!
+              {isFirstTime ? `Welcome, ${firstName}! 🎉` : `Welcome back, ${firstName}!`}
             </h1>
-            <p className="mt-2 text-gray-400">Ready to get stronger?</p>
+            <p className="mt-2 text-gray-400">
+              {isFirstTime
+                ? "Let's start your strength journey with the 2 Set Method!"
+                : "Ready to get stronger?"}
+            </p>
           </div>
           <Link href="/login">
             <Button variant="outline">Sign Out</Button>
