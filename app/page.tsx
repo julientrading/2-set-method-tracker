@@ -23,13 +23,13 @@ export default function LandingPage() {
               href="/signup"
               className="rounded-lg bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
             >
-              Start Training
+              Sign Up
             </Link>
             <Link
               href="/login"
               className="rounded-lg border-2 border-blue-400 px-8 py-4 text-lg font-semibold text-blue-400 transition hover:bg-blue-400 hover:text-white"
             >
-              Login
+              Sign In
             </Link>
           </div>
         </div>
