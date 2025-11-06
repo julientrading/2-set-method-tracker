@@ -32,7 +32,7 @@ export async function signup(formData: FormData) {
       data: {
         full_name: formData.get('full_name') as string,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://2-set-method-tracker.vercel.app'}/auth/confirm`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://2-set-method-tracker.vercel.app'}/login`,
     },
   }
 
@@ -55,8 +55,7 @@ export async function signup(formData: FormData) {
     }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/onboarding')
+  return { success: true }
 }
 
 export async function signOut() {
