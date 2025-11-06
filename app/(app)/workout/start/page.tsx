@@ -15,15 +15,6 @@ export default async function WorkoutStartPage() {
     redirect('/login')
   }
 
-  // Fetch user's current stage to determine which exercises to show
-  const { data: profile } = await supabase
-    .from('users')
-    .select('current_stage')
-    .eq('id', user.id)
-    .single()
-
-  const currentStage = profile?.current_stage || 1
-
   // Define workouts based on the spec
   const workouts = {
     pull: {

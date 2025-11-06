@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 function WorkoutCompleteContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const workoutType = searchParams.get('type') || 'workout'

@@ -46,13 +46,6 @@ export default function ActiveWorkoutPage() {
   const params = useParams()
   const workoutType = params.type as string
 
-  const workout = WORKOUTS[workoutType as keyof typeof WORKOUTS]
-
-  if (!workout) {
-    router.push('/workout/start')
-    return null
-  }
-
   // State for tracking sets
   const [sets, setSets] = useState<{ [key: string]: SetData }>({
     'ex1-set1': { reps: null, weight: null, completed: false },
@@ -67,6 +60,15 @@ export default function ActiveWorkoutPage() {
   const [restTimeLeft, setRestTimeLeft] = useState(120) // 2 minutes default
   const [xpEarned, setXpEarned] = useState(0)
 
+  const workout = WORKOUTS[workoutType as keyof typeof WORKOUTS]
+
+  // Redirect if invalid workout type
+  useEffect(() => {
+    if (!workout) {
+      router.push('/workout/start')
+    }
+  }, [workout, router])
+
   // Rest timer logic
   useEffect(() => {
     if (showRestTimer && restTimeLeft > 0) {
@@ -76,6 +78,11 @@ export default function ActiveWorkoutPage() {
       setShowRestTimer(false)
     }
   }, [showRestTimer, restTimeLeft])
+
+  // Return early if no valid workout (after hooks are called)
+  if (!workout) {
+    return null
+  }
 
   const currentExerciseData = workout.exercises[currentExercise]
   const setKey = `ex${currentExercise + 1}-set${currentSet}`

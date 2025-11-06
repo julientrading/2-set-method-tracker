@@ -37,7 +37,7 @@ function LoginForm() {
 
       // Try to exchange the code, but if it fails, the email is still confirmed
       supabase.auth.exchangeCodeForSession(code)
-        .then(({ data, error }) => {
+        .then(() => {
           // Whether it succeeds or fails, the email is confirmed (they clicked the link)
           // Sign them out so they have to login manually
           supabase.auth.signOut().then(() => {
